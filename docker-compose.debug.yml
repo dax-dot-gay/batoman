@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api.dev
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./batoman_api:/batoman/batoman_api
+      - ./data:/batoman/batoman_api/data
+      - /mnt/remotes/batocera/userdata:/userdata
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client.dev
+
+    ports:
+      - "5173:5173"
+
+    volumes:
+      - ./batoman_client:/batoman/batoman_client
+
+    depends_on:
+      - api

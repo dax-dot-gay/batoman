@@ -1,0 +1,6 @@
+litestar[standard]
+tinydb
+pydantic
+aiotinydb
+aiofiles
+httpx

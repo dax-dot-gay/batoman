@@ -1,0 +1,11 @@
+FROM node:21-alpine
+
+RUN mkdir -p /batoman/batoman_client /batoman/certs
+VOLUME /batoman/batoman_client
+EXPOSE 5173/tcp
+COPY ./batoman_client/package.json /batoman/batoman_client
+COPY ./certs /batoman/certs
+WORKDIR /batoman/batoman_client
+RUN yarn install
+
+ENTRYPOINT [ "yarn", "dev", "--host" ]

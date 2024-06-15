@@ -1,0 +1,6 @@
+[paths]
+[paths.system]
+cache = "/batoman/batoman_api/data/cache"
+data = "/batoman/batoman_api/data/db.json"
+
+[paths.batocera]
