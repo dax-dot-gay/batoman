@@ -9,7 +9,7 @@ services:
 
     volumes:
       - ./batoman_api:/batoman/batoman_api
-      - ./data:/batoman/batoman_api/data
+      - ./data:/batoman/data
       - /mnt/remotes/batocera/userdata:/userdata
 
   client:
