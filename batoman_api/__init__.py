@@ -3,8 +3,9 @@ from datetime import datetime
 from typing import AsyncGenerator
 from litestar import Litestar, get
 from litestar.datastructures import State
-from .models import initialize_db, MODELS, SessionModel
-from .util import Context, Config
+from litestar.di import Provide
+from .models import initialize_db, MODELS, Session, AuthState
+from .util import Context, Config, CookieSessionManager, provide_session
 from litestar import MediaType, Request, Response
 from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
@@ -13,15 +14,14 @@ from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
 @asynccontextmanager
 async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
     config = Config.load()
-    async with initialize_db(MODELS, config.paths.system.data) as db:
+    async with initialize_db(MODELS, config.paths.data) as db:
         app.state.context = Context(db, config)
         yield
 
 
 @get("/")
-async def get_root() -> datetime:
-    await SessionModel().save()
-    return datetime.now()
+async def get_root(session: Session) -> Session:
+    return session.get_auth_state()
 
 
 def plain_text_exception_handler(req: Request, exc: Exception) -> Response:
@@ -42,4 +42,6 @@ app = Litestar(
     state=State({"context": None}),
     lifespan=[lifespan],
     exception_handlers={500: plain_text_exception_handler},
+    middleware=[CookieSessionManager],
+    dependencies={"session": Provide(provide_session)},
 )

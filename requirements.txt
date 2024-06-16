@@ -4,3 +4,6 @@ pydantic
 aiotinydb
 aiofiles
 httpx
+passlib
+asyncssh
+argon2_cffi

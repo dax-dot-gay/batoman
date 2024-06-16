@@ -2,23 +2,42 @@ import tomllib
 from pydantic import BaseModel
 
 
-class PathsSystemConfig(BaseModel):
+class PathsConfig(BaseModel):
     cache: str
     staging: str
     data: str
 
 
-class PathsBatoceraConfig(BaseModel):
+class BatoceraSSHConfig(BaseModel):
+    host: str
+    port: int = 22
+    username: str
+    password: str
+
+
+class BatoceraPathsConfig(BaseModel):
     userdata: str
 
 
-class PathsConfig(BaseModel):
-    system: PathsSystemConfig
-    batocera: PathsBatoceraConfig
+class BatoceraConfig(BaseModel):
+    ssh: BatoceraSSHConfig
+    paths: BatoceraPathsConfig
+
+
+class AuthAdminConfig(BaseModel):
+    username: str | None = None
+    password: str | None = None
+    active: bool = False
+
+
+class AuthConfig(BaseModel):
+    admin: AuthAdminConfig | None = None
 
 
 class Config(BaseModel):
     paths: PathsConfig
+    batocera: BatoceraConfig
+    auth: AuthConfig
 
     @classmethod
     def load(cls, config_path: str = "config.toml") -> "Config":

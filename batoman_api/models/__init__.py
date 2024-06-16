@@ -1,4 +1,4 @@
 from .base import initialize_db, BaseObject
-from .session import SessionModel
+from .auth import Session, User, AuthState, RedactedUser
 
-MODELS = [SessionModel]
+MODELS = [Session, User]

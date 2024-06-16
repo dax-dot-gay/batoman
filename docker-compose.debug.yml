@@ -11,6 +11,7 @@ services:
       - ./batoman_api:/batoman/batoman_api
       - ./data:/batoman/data
       - /mnt/remotes/batocera/userdata:/userdata
+      - ./config.toml:/batoman/config.toml
 
   client:
     build:

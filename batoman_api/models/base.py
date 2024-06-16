@@ -1,11 +1,13 @@
+import asyncio
 from contextlib import asynccontextmanager
-from typing import Any, AsyncGenerator, ClassVar, Mapping, Type, TypeVar
+from typing import Any, AsyncGenerator, Callable, ClassVar, Mapping, Type, TypeVar
 from uuid import uuid4
 from pydantic import BaseModel, Field
 from aiotinydb import AIOTinyDB
 from tinydb import where
 from tinydb.queries import QueryLike
 from tinydb.table import Table, Document
+import concurrent.futures
 
 
 class CustomDocument(Document):
@@ -66,31 +68,34 @@ class BaseObject(BaseModel):
         return self._db.table(self.collection)
 
     @classmethod
-    async def get(cls: Type[TBase], id: str) -> TBase | None:
+    def get(cls: Type[TBase], id: str) -> TBase | None:
         cls._check_class()
-        result = await cls.get_table().get(doc_id=int.from_bytes(bytes.fromhex(id)))
+        result = cls.get_table().get(doc_id=int.from_bytes(bytes.fromhex(id)))
         return cls(**result) if result else None
 
     @classmethod
-    async def query(cls: Type[TBase], query: QueryLike) -> list[TBase]:
+    def query(cls: Type[TBase], query: QueryLike) -> list[TBase]:
         cls._check_class()
         return [cls(**i) for i in cls.get_table().search(query)]
+
+    @classmethod
+    def query_one(cls: Type[TBase], query: QueryLike) -> TBase | None:
+        cls._check_class()
+        result = cls.get_table().get(query)
+        return cls(**result) if result else None
 
     @property
     def json(self):
         return self.model_dump(mode="json")
 
-    async def save(self):
+    def save(self):
         self._check()
-        print(int.from_bytes(bytes.fromhex(self.id)))
-        print(
-            self.table.upsert(
-                CustomDocument(self.json, int.from_bytes(bytes.fromhex(self.id))),
-                where("id") == self.id,
-            )
+        self.table.upsert(
+            CustomDocument(self.json, int.from_bytes(bytes.fromhex(self.id))),
+            where("id") == self.id,
         )
 
-    async def delete(self):
+    def delete(self):
         self._check()
         self.table.remove(doc_ids=[int.from_bytes(bytes.fromhex(self.id))])
 
