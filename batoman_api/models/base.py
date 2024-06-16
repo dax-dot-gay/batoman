@@ -56,14 +56,14 @@ class BaseObject(BaseModel):
     @classmethod
     def get_table(cls) -> CustomTable:
         cls._check_class()
-        if cls.collection:
+        if not cls.collection:
             return cls._db.table("_default")
         return cls._db.table(cls.collection)
 
     @property
     def table(self) -> CustomTable:
         self._check()
-        if self.collection:
+        if not self.collection:
             return self._db.table("_default")
         return self._db.table(self.collection)
 
