@@ -9,7 +9,7 @@ import {
     ApiContextType_ready,
 } from "./types";
 import { ApiMethods, BaseApiMethods } from "./methods/base";
-import { AuthState } from "../../models";
+import { AuthState, UserType } from "../../models";
 import { UnionToIntersection, ValuesType } from "utility-types";
 import { useCustomCompareMemo } from "use-custom-compare";
 import { difference, eq, uniqueId } from "lodash";
@@ -80,4 +80,9 @@ export function useApi<TMixins extends ApiMethods<any, any>[]>(
         auth: context.state === "ready" ? context.authState : null,
         methods: constructedMethods as any
     }
+}
+
+export function useUser(): UserType | null {
+    const context = useApiContext();
+    return context.state === "ready" ? context.authState.user : null;
 }

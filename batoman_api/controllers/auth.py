@@ -1,8 +1,10 @@
-from litestar import Controller, post, get
+from litestar import Controller, post, delete
 from litestar.exceptions import *
 from pydantic import BaseModel;
 from ..models import Session, User, AuthState
 from tinydb import where
+from ..util import guard_logged_in, provide_user
+from litestar.di import Provide
 
 class CredentialsModel(BaseModel):
     username: str
@@ -23,4 +25,9 @@ class AuthController(Controller):
             return session.get_auth_state()
         else:
             raise NotFoundException(detail="Unknown username/password")
+        
+    @delete("/logout", guards=[guard_logged_in], dependencies={"user": Provide(provide_user)})
+    async def post_logout(self, session: Session) -> None:
+        session.user_id = None
+        session.save()
     

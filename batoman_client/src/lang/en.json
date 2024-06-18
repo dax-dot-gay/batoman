@@ -6,6 +6,12 @@
       "info": "Info:",
       "warning": "Warning:",
       "error": "Error:"
+    },
+    "auth": {
+      "userType": {
+        "admin": "Admin",
+        "user": "User"
+      }
     }
   },
   "views": {
