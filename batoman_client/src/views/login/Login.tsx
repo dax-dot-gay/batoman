@@ -22,6 +22,8 @@ import { PasswordInput } from "@/components/form/PasswordInput";
 import { useApi } from "@/util/api";
 import { AuthMixin } from "@/util/api/methods/auth";
 import { useNotifications } from "@/util/notifications";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export function LoginView() {
     const { t } = useTranslation();
@@ -39,6 +41,14 @@ export function LoginView() {
     });
     const api = useApi(AuthMixin);
     const { success, error } = useNotifications();
+    const nav = useNavigate();
+
+    useEffect(() => {
+        if (api.state === "ready" && api.auth?.user) {
+            nav("/");
+        }
+    }, [api.state, api.auth?.session?.id, api.auth?.user?.id]);
+
     return (
         <Box className="app-root auth">
             <Stack gap="sm" className="auth-container">
@@ -67,7 +77,14 @@ export function LoginView() {
                             onSubmit={form.onSubmit(({ username, password }) =>
                                 api.methods
                                     .login(username, password)
-                                    .then(console.log),
+                                    .then((result) => {
+                                        if (result) {
+                                            success(t("views.login.success"));
+                                            nav("/");
+                                        } else {
+                                            error(t("views.login.failed"));
+                                        }
+                                    }),
                             )}
                         >
                             <Stack gap="sm">

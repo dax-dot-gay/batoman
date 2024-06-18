@@ -15,7 +15,9 @@
         "username": "Username",
         "password": "Password"
       },
-      "submit": "Log In"
+      "submit": "Log In",
+      "success": "Logged in!",
+      "failed": "Incorrect username or password."
     }
   },
   "errors": {

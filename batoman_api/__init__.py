@@ -6,6 +6,7 @@ from litestar.datastructures import State
 from litestar.di import Provide
 from .models import initialize_db, MODELS, Session, AuthState
 from .util import Context, Config, CookieSessionManager, provide_session
+from .controllers import CONTROLLERS
 from litestar import MediaType, Request, Response
 from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
@@ -20,7 +21,7 @@ async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
 
 
 @get("/")
-async def get_root(session: Session) -> Session:
+async def get_root(session: Session) -> AuthState:
     return session.get_auth_state()
 
 
@@ -38,7 +39,7 @@ def plain_text_exception_handler(req: Request, exc: Exception) -> Response:
 
 
 app = Litestar(
-    route_handlers=[get_root],
+    route_handlers=[get_root, *CONTROLLERS],
     state=State({"context": None}),
     lifespan=[lifespan],
     exception_handlers={500: plain_text_exception_handler},

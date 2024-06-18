@@ -19,7 +19,7 @@ class Session(BaseObject):
         return User.get(self.user_id)
 
     def get_auth_state(self) -> "AuthState":
-        return AuthState(session=self, user=self.user)
+        return AuthState(session=self, user=self.user.redacted if self.user else None)
 
 
 class RedactedUser(BaseModel):

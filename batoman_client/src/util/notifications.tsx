@@ -1,28 +1,28 @@
 import { notifications } from "@mantine/notifications";
 import {
-    IconCircleCheck,
-    IconCircleX,
-    IconExclamationCircle,
-    IconInfoCircle,
+    IconCheck,
+    IconExclamationMark,
+    IconInfoSmall,
+    IconX,
 } from "@tabler/icons-react";
 import { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 const NOTIFICATION_TYPES = {
     success: {
-        icon: IconCircleCheck,
+        icon: IconCheck,
         color: "lime",
     },
     info: {
-        icon: IconInfoCircle,
+        icon: IconInfoSmall,
         color: "cyan",
     },
     warning: {
-        icon: IconExclamationCircle,
+        icon: IconExclamationMark,
         color: "orange",
     },
     error: {
-        icon: IconCircleX,
+        icon: IconX,
         color: "red",
     },
 };
