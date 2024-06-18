@@ -1,20 +1,18 @@
 import { MantineProvider } from "@mantine/core";
-import { ApiProvider, useApi } from "./util/api";
-import { AuthMixin } from "./util/api/methods/auth";
-
-function Test() {
-    const api = useApi(AuthMixin);
-    api.methods.login("test", "test").then(console.log);
-    console.log(api);
-    return <></>
-}
+import { ApiProvider } from "./util/api";
+import { I18nextProvider } from "react-i18next";
+import i18n from "./util/localization";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./util/routes";
 
 function App() {
     return (
         <MantineProvider defaultColorScheme="dark">
-            <ApiProvider>
-                <Test />
-            </ApiProvider>
+            <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+                <ApiProvider>
+                    <RouterProvider router={router} />
+                </ApiProvider>
+            </I18nextProvider>
         </MantineProvider>
     );
 }
