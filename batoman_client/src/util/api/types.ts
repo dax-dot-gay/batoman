@@ -30,21 +30,24 @@ export type ApiRequestFunction = <TData = any>(
     options?: ApiRequestOptions,
 ) => Promise<ApiResponse<TData>>;
 
-export type ApiContextType =
-    | {
-          state: "init";
-      }
-    | {
-          state: "ready";
-          authState: AuthState;
-          request: ApiRequestFunction;
-          refresh: () => Promise<AuthState | null>;
-      }
-    | {
-          state: "error";
-          refresh: () => Promise<AuthState | null>;
-          reason: string | null;
-      };
+export type ApiContextType_init = {
+    state: "init";
+};
+
+export type ApiContextType_ready = {
+    state: "ready";
+    authState: AuthState;
+    request: ApiRequestFunction;
+    refresh: () => Promise<AuthState | null>;
+}
+
+export type ApiContextType_error = {
+    state: "error";
+    refresh: () => Promise<AuthState | null>;
+    reason: string | null;
+};
+
+export type ApiContextType = ApiContextType_init | ApiContextType_ready | ApiContextType_error;
 
 export const ApiContext = createContext<ApiContextType>({
     state: "error",

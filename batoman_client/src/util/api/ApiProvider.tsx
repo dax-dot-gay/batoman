@@ -26,7 +26,7 @@ export function ApiProvider({
                     ["POST", "PUT", "PATCH"].includes(
                         options?.method ?? "GET",
                     ) && (options as any).body
-                        ? (options as any).body
+                        ? JSON.stringify((options as any).body)
                         : undefined,
             });
 
