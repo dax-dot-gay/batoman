@@ -1,1 +1,26 @@
-{}
+{
+  "common": {
+    "appName": "Batoman",
+    "notifications": {
+      "success": "Success!",
+      "info": "Info:",
+      "warning": "Warning:",
+      "error": "Error:"
+    }
+  },
+  "views": {
+    "login": {
+      "title": "Login",
+      "fields": {
+        "username": "Username",
+        "password": "Password"
+      },
+      "submit": "Log In"
+    }
+  },
+  "errors": {
+    "form": {
+      "field_required": "Field must not be empty"
+    }
+  }
+}

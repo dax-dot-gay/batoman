@@ -4,7 +4,7 @@
     "**/*.scss",
     "**/*.sass",
     "**/*.less",
-    "node_modules/@mantine/core/styles.css"
+    "batoman_client/node_modules/@mantine/core/styles.css"
   ],
-  "i18n-ally.localesPaths": "batoman_client/src/lang/*.json",
+  "i18n-ally.localesPaths": "batoman_client/src/lang",
 }

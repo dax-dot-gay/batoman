@@ -16,6 +16,7 @@
     "@mantine/hooks": "^7.10.2",
     "@mantine/modals": "^7.10.2",
     "@mantine/notifications": "^7.10.2",
+    "@tabler/icons-react": "^3.6.0",
     "@uidotdev/usehooks": "^2.4.1",
     "i18next": "^23.11.5",
     "lodash": "^4.17.21",
@@ -42,6 +43,7 @@
     "postcss-preset-mantine": "^1.15.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.3.2",
+    "sass": "^1.77.6",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
