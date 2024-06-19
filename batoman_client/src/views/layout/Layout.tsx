@@ -16,11 +16,9 @@ import {
 } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
-    IconBrandAppleArcade,
     IconDeviceDesktopCog,
     IconDeviceGamepad2,
     IconDownload,
-    IconHome,
     IconLogout,
     IconSearch,
     IconServerCog,
