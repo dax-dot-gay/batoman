@@ -30,5 +30,15 @@
     "form": {
       "field_required": "Field must not be empty"
     }
+  },
+  "layout": {
+    "navItem": {
+      "search": "Search ROMs",
+      "downloads": "Downloads",
+      "installed": "Installed Games",
+      "manageEmulator": "Emulator Settings",
+      "manageInstance": "Instance Settings",
+      "sectionAdmin": "Administration"
+    }
   }
 }

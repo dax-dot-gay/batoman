@@ -1,12 +1,13 @@
 import { Outlet, useNavigate } from "react-router-dom";
 import { useApi, useUser } from "../../util/api";
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import {
     ActionIcon,
     AppShell,
     Avatar,
     Badge,
     Burger,
+    Button,
     Divider,
     Group,
     Stack,
@@ -14,9 +15,44 @@ import {
     useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { IconDeviceGamepad2, IconLogout, IconUser } from "@tabler/icons-react";
+import {
+    IconBrandAppleArcade,
+    IconDeviceDesktopCog,
+    IconDeviceGamepad2,
+    IconDownload,
+    IconHome,
+    IconLogout,
+    IconSearch,
+    IconServerCog,
+    IconShield,
+    IconUser,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { AuthMixin } from "@/util/api/methods/auth";
+
+function NavbarLink({
+    label,
+    icon,
+    url,
+}: {
+    label: string;
+    icon: (props: any) => ReactNode;
+    url: string;
+}) {
+    const nav = useNavigate();
+    const Element = icon;
+    return (
+        <Button
+            px="xs"
+            justify="space-between"
+            leftSection={<Element size={22} />}
+            onClick={() => nav(url)}
+            variant="light"
+        >
+            {label}
+        </Button>
+    );
+}
 
 export function Layout() {
     const { state, auth, methods } = useApi(AuthMixin);
@@ -62,7 +98,50 @@ export function Layout() {
                         gap="xs"
                         style={{ flexGrow: 1 }}
                         p="sm"
-                    ></Stack>
+                    >
+                        <NavbarLink
+                            label={t("layout.navItem.search")}
+                            icon={IconSearch}
+                            url="/"
+                        />
+                        <NavbarLink
+                            label={t("layout.navItem.downloads")}
+                            icon={IconDownload}
+                            url="/downloads"
+                        />
+                        <NavbarLink
+                            label={t("layout.navItem.installed")}
+                            icon={IconDeviceGamepad2}
+                            url="/installed"
+                        />
+                        {user?.is_admin && (
+                            <>
+                                <Divider
+                                    labelPosition="left"
+                                    label={
+                                        <Group gap={4}>
+                                            <IconShield size={14} />
+                                            <Text size="xs">
+                                                {t(
+                                                    "layout.navItem.sectionAdmin",
+                                                )}
+                                            </Text>
+                                        </Group>
+                                    }
+                                />
+                                <NavbarLink
+                                    label={t("layout.navItem.manageEmulator")}
+                                    icon={IconDeviceDesktopCog}
+                                    url="/admin/emulator"
+                                />
+                                <NavbarLink
+                                    label={t("layout.navItem.manageInstance")}
+                                    icon={IconServerCog}
+                                    url="/admin/instance"
+                                />
+                            </>
+                        )}
+                    </Stack>
                     <Divider />
                     <Group gap="sm" p="sm" justify="space-between">
                         <Group gap="sm">
