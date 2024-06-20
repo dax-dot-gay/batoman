@@ -7,3 +7,4 @@ httpx
 passlib
 asyncssh
 argon2_cffi
+async-igdb
