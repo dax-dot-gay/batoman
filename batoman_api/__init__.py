@@ -5,19 +5,31 @@ from litestar import Litestar, get
 from litestar.datastructures import State
 from litestar.di import Provide
 from .models import initialize_db, MODELS, Session, AuthState
-from .util import Context, Config, CookieSessionManager, provide_session
+from .util import (
+    Context,
+    Config,
+    CookieSessionManager,
+    provide_session,
+    provide_config,
+    provide_context,
+    provide_igdb,
+)
 from .controllers import CONTROLLERS
 from litestar import MediaType, Request, Response
 from litestar.exceptions import HTTPException
 from litestar.status_codes import HTTP_500_INTERNAL_SERVER_ERROR
+from async_igdb import IGDBClient
 
 
 @asynccontextmanager
 async def lifespan(app: Litestar) -> AsyncGenerator[None, None]:
     config = Config.load()
-    async with initialize_db(MODELS, config.paths.data) as db:
-        app.state.context = Context(db, config)
-        yield
+    async with IGDBClient(
+        config.services.igdb.client_id, client_secret=config.services.igdb.client_secret
+    ) as igdb_client:
+        async with initialize_db(MODELS, config.paths.data) as db:
+            app.state.context = Context(db, config, igdb_client)
+            yield
 
 
 @get("/")
@@ -44,5 +56,10 @@ app = Litestar(
     lifespan=[lifespan],
     exception_handlers={500: plain_text_exception_handler},
     middleware=[CookieSessionManager],
-    dependencies={"session": Provide(provide_session)},
+    dependencies={
+        "session": Provide(provide_session),
+        "context": Provide(provide_context),
+        "config": Provide(provide_config),
+        "igdb": Provide(provide_igdb),
+    },
 )

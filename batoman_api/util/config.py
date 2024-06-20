@@ -34,10 +34,20 @@ class AuthConfig(BaseModel):
     admin: AuthAdminConfig | None = None
 
 
+class IGDBServicesConfig(BaseModel):
+    client_id: str
+    client_secret: str
+
+
+class ServicesConfig(BaseModel):
+    igdb: IGDBServicesConfig
+
+
 class Config(BaseModel):
     paths: PathsConfig
     batocera: BatoceraConfig
     auth: AuthConfig
+    services: ServicesConfig
 
     @classmethod
     def load(cls, config_path: str = "config.toml") -> "Config":

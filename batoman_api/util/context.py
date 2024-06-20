@@ -2,12 +2,15 @@ from aiotinydb import AIOTinyDB
 from tinydb import where
 from .config import Config
 from ..models.auth import User
+from async_igdb import IGDBClient
 
 
 class Context:
-    def __init__(self, db: AIOTinyDB, config: Config):
+
+    def __init__(self, db: AIOTinyDB, config: Config, igdb_client: IGDBClient):
         self.db = AIOTinyDB
         self.config = config
+        self.igdb_client = igdb_client
 
         if self.config.auth.admin and self.config.auth.admin.active:
             existing = User.query_one(

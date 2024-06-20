@@ -3,6 +3,9 @@ from .session_middleware import get_session_from_connection
 from litestar.exceptions import *
 from litestar.connection import ASGIConnection
 from litestar.handlers.base import BaseRouteHandler
+from litestar.datastructures import State
+from .context import Context, Config
+from async_igdb import IGDBClient
 
 async def provide_user(session: Session) -> User:
     user = session.user
@@ -14,3 +17,15 @@ async def guard_logged_in(connection: ASGIConnection, route_handler: BaseRouteHa
     session = await get_session_from_connection(connection)
     if not session.user:
         raise NotAuthorizedException("Login required to access this endpoint.")
+
+
+async def provide_context(state: State) -> Context:
+    return state.context
+
+
+async def provide_config(context: Context) -> Config:
+    return context.config
+
+
+async def provide_igdb(context: Context) -> IGDBClient:
+    return context.igdb_client
