@@ -8,7 +8,7 @@ VOLUME /batoman/config.toml
 COPY ./requirements.txt /batoman
 COPY ./certs /batoman/certs
 WORKDIR /batoman
-RUN python -m pip install -r requirements.txt
+RUN python -m pip install -r requirements.txt --upgrade --no-cache
 EXPOSE 8000/tcp
 
 ENTRYPOINT [ "litestar", "--app", "batoman_api:app", "run", "--reload", "--host", "0.0.0.0", "--ssl-certfile", "/batoman/certs/api/cert.pem", "--ssl-keyfile", "/batoman/certs/api/key.pem", "--reload-include", "config.toml" ]

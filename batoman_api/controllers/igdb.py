@@ -9,4 +9,7 @@ class IGDBController(Controller):
 
     @get("/platforms")
     async def get_platform_list(self, igdb: IGDBClient) -> list[PlatformModel]:
-        return await igdb.platforms.find(limit=500)
+        return [
+            PlatformModel(**i.model_dump())
+            for i in await igdb.resolve_links(await igdb.platforms.find(limit=500))
+        ]
