@@ -1,6 +1,7 @@
 from litestar import Controller, get
 from ..util import guard_logged_in
 from async_igdb import IGDBClient, PlatformModel
+from ..models import CacheObject
 
 
 class IGDBController(Controller):
@@ -9,7 +10,10 @@ class IGDBController(Controller):
 
     @get("/platforms")
     async def get_platform_list(self, igdb: IGDBClient) -> list[PlatformModel]:
-        return [
-            PlatformModel(**i.model_dump())
-            for i in await igdb.resolve_links(await igdb.platforms.find(limit=500))
-        ]
+        cached = CacheObject[list[PlatformModel]].from_cache("platforms-cache")
+        if cached:
+            return cached.data
+
+        result = await igdb.resolve_links(await igdb.platforms.find(limit=500))
+        CacheObject[list[PlatformModel]].to_cache("platforms-cache", result)
+        return result
