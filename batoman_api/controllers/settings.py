@@ -14,24 +14,29 @@ from tinydb import where
 
 
 class SettingsController(Controller):
-    path = "/settings/{scope:str}/{key:str}"
+    path = "/settings/{setting_scope:str}/{key:str}"
     guards = [guard_logged_in]
     dependencies = {"user": Provide(provide_user)}
 
     @get("/")
-    async def get_all_settings(self, scope: SettingScope, key: str) -> list[BaseRecord]:
-        return get_setting(scope, key)
+    async def get_all_settings(
+        self, setting_scope: SettingScope, key: str
+    ) -> list[BaseRecord]:
+        return get_setting(setting_scope, key)
 
     @get(path="/{record_id:str}")
     async def get_record_by_id(
-        self, scope: SettingScope, key: str, record_id: str, context: Context
+        self, setting_scope: SettingScope, key: str, record_id: str, context: Context
     ) -> BaseRecord:
-        result = get_setting(scope, key, query=where("record_id") == record_id)
+        result = get_setting(setting_scope, key, query=where("record_id") == record_id)
         if len(result) > 0:
             return result[0]
 
-        if scope in RECORD_FACTORIES.keys() and key in RECORD_FACTORIES[scope].keys():
-            default = RECORD_FACTORIES[scope][key].default(context, record_id)
+        if (
+            setting_scope in RECORD_FACTORIES.keys()
+            and key in RECORD_FACTORIES[setting_scope].keys()
+        ):
+            default = RECORD_FACTORIES[setting_scope][key].default(context, record_id)
             if default:
                 return default
 
@@ -40,14 +45,17 @@ class SettingsController(Controller):
     @post("/{record_id:str}", guards=[guard_is_admin])
     async def create_record(
         self,
-        scope: SettingScope,
+        setting_scope: SettingScope,
         key: str,
         record_id: str,
         context: Context,
         data: dict,
     ) -> BaseRecord:
-        if scope in RECORD_FACTORIES.keys() and key in RECORD_FACTORIES[scope].keys():
-            new_record = await RECORD_FACTORIES[scope][key].create(
+        if (
+            setting_scope in RECORD_FACTORIES.keys()
+            and key in RECORD_FACTORIES[setting_scope].keys()
+        ):
+            new_record = await RECORD_FACTORIES[setting_scope][key].create(
                 context, record_id, **data
             )
             if new_record:
@@ -59,10 +67,10 @@ class SettingsController(Controller):
 
     @delete("/{record_id:str}", guards=[guard_is_admin])
     async def delete_record(
-        self, scope: SettingScope, key: str, record_id: str
+        self, setting_scope: SettingScope, key: str, record_id: str
     ) -> None:
         result: list[BaseRecord] = get_setting[BaseRecord](
-            scope, key, query=where("record_id") == record_id
+            setting_scope, key, query=where("record_id") == record_id
         )
         if len(result) > 0:
             result[0].delete()
