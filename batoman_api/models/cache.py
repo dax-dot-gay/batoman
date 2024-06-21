@@ -2,18 +2,18 @@ from datetime import UTC, datetime, timedelta
 from .base import BaseObject, CustomDocument
 from tinydb import where
 from pydantic import BaseModel
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar
 
 TCache = TypeVar("TCache", bound=BaseModel)
 
 
-class CacheObject[TCache](BaseObject):
+class CacheObject(BaseObject):
     collection = "cache"
 
     cache_id: str
     last_cache: datetime
     expire: timedelta
-    cached_data: TCache
+    cached_data: Any
 
     def save(self):
         self._check()
@@ -26,9 +26,9 @@ class CacheObject[TCache](BaseObject):
     def to_cache(
         cls: Type["CacheObject"],
         id: str,
-        data: TCache,
+        data: Any,
         expire: timedelta = timedelta(days=1),
-    ) -> "CacheObject[TCache]":
+    ) -> "CacheObject":
         new_cache = cls(
             cache_id=id, last_cache=datetime.now(UTC), cached_data=data, expire=expire
         )
@@ -36,7 +36,7 @@ class CacheObject[TCache](BaseObject):
         return new_cache
 
     @classmethod
-    def from_cache(cls: Type["CacheObject"], id: str) -> "CacheObject[TCache] | None":
+    def from_cache(cls: Type["CacheObject"], id: str) -> "CacheObject | None":
         result = cls.query_one(where("cache_id") == id)
         if result:
             if result.last_cache + result.expire < datetime.now(UTC):
@@ -46,11 +46,11 @@ class CacheObject[TCache](BaseObject):
         return None
 
     @property
-    def data(self) -> TCache:
+    def data(self) -> Any:
         return self.cached_data
 
     @data.setter
-    def data(self, value: TCache):
+    def data(self, value: Any):
         self.cached_data = value
         self.last_cache = datetime.now(UTC)
         self.save()
