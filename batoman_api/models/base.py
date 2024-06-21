@@ -84,6 +84,11 @@ class BaseObject(BaseModel):
         result = cls.get_table().get(query)
         return cls(**result) if result else None
 
+    @classmethod
+    def all(cls: Type[TBase]) -> list[TBase]:
+        cls._check_class()
+        return [cls(**i) for i in cls.get_table().all()]
+
     @property
     def json(self):
         return self.model_dump(mode="json")

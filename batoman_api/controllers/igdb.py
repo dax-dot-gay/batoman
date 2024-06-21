@@ -12,6 +12,7 @@ class IGDBController(Controller):
     async def get_platform_list(self, igdb: IGDBClient) -> list[PlatformModel]:
         cached = CacheObject.from_cache("platforms-cache")
         if cached:
+            print([i["slug"] for i in cached.data])
             return cached.data
 
         result = await igdb.resolve_links(await igdb.platforms.find(limit=500))

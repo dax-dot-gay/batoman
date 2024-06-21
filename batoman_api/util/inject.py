@@ -19,6 +19,16 @@ async def guard_logged_in(connection: ASGIConnection, route_handler: BaseRouteHa
         raise NotAuthorizedException("Login required to access this endpoint.")
 
 
+async def guard_is_admin(
+    connection: ASGIConnection, route_handler: BaseRouteHandler
+) -> None:
+    session = await get_session_from_connection(connection)
+    if not session.user:
+        raise NotAuthorizedException("Login required to access this endpoint.")
+    if not session.user.is_admin:
+        raise NotAuthorizedException("Insufficient permissions")
+
+
 async def provide_context(state: State) -> Context:
     return state.context
 
